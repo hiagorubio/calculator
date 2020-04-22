@@ -20,14 +20,9 @@ const OPERATIONS = {
 };
 
 const handleOperation = (values, operation) => {
-  console.log('LOG >>>>>: handleOperation -> operation', typeof operation)
-  console.log('LOG >>>>>: handleOperation -> values', values)
-  const { valueOne, valueTwo } = values;
+  const { 0: valueOne, 1: valueTwo } = values;
   switch (operation) {
     case '+':
-      console.log('LOG >>>>>: handleOperation -> valueOne', valueOne)
-      console.log('LOG >>>>>: handleOperation -> valueTwo', valueTwo)
-      console.log('LOG >>>>>: handleOperation -> valueOne + valueTwo', valueOne + valueTwo)
       return valueOne + valueTwo;
     case '-':
       return valueOne - valueTwo;
@@ -49,21 +44,22 @@ export default class Calculator extends Component {
   setOperation(operation) {
 
     if (!this.state.current) {
-      this.setState({ operation, current: 1, clearDisplay: 1 })
+      this.setState({ operation, current: 1, clearDisplay: true })
     } else {
       const state = { ...this.state };
       const isEqualsOperation = operation === OPERATIONS.equals;
       const currentOperation = state.operation;
-      const values = state.values;
-      console.log('LOG >>>>>: Calculator -> setOperation -> values', values)
-      const result = handleOperation(values, currentOperation);
-      values[0] = result;
-      values[1] = 0;
+      const result = handleOperation(this.state.values, currentOperation);
+      // values[0] = result;
+      const values = {
+        0: result,
+        1: 0
+      };
 
       this.setState({
-        displayValue: values[0],
+        displayValue: result,
         operation: isEqualsOperation ? null : operation,
-        current: isEqualsOperation ? 0 : 1,
+        current: isEqualsOperation ? false : true,
         clearDisplay: !isEqualsOperation,
         values
       })
